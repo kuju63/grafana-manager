@@ -1,5 +1,11 @@
 import { AxiosInstance } from "axios";
 
+export interface DeleteDashboardResponse {
+    title: string;
+    message: string;
+    id: number;
+}
+
 export class Dashboard {
     private apiInstance: AxiosInstance;
     /**
@@ -36,6 +42,39 @@ export class Dashboard {
                     );
             }
         });
+        return promise;
+    }
+
+    async deleteDashboardByUidAsync(
+        uid: string
+    ): Promise<DeleteDashboardResponse> {
+        const promise = new Promise<DeleteDashboardResponse>(
+            (resolve, reject) => {
+                if (!uid || uid === "") {
+                    reject({ error: "uid is empty" });
+                } else {
+                    this.apiInstance.delete(`/api/dashboards/uid/${uid}`).then(
+                        (res) => {
+                            if (res.status === 200) {
+                                const responseData: DeleteDashboardResponse =
+                                    res.data;
+                                resolve(responseData);
+                            } else {
+                                reject({
+                                    error: {
+                                        message: res.statusText,
+                                        status: res.status,
+                                    },
+                                });
+                            }
+                        },
+                        (error) => {
+                            reject({ error: error });
+                        }
+                    );
+                }
+            }
+        );
         return promise;
     }
 }
