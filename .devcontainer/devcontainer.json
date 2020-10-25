@@ -17,7 +17,8 @@
         "VisualStudioExptTeam.vscodeintellicode",
         "EditorConfig.EditorConfig",
         "streetsidesoftware.code-spell-checker",
-        "DavidAnson.vscode-markdownlint"
+        "DavidAnson.vscode-markdownlint",
+        "orta.vscode-jest"
     ],
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
