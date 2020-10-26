@@ -115,6 +115,7 @@ describe("Dashboard API Test", () => {
 
     it("createOrUpdateFileNotFound", () => {
         const dashboardApi = new Dashboard(myAxios);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => false);
         expect.assertions(1);
         return dashboardApi
@@ -124,8 +125,10 @@ describe("Dashboard API Test", () => {
 
     it("createOrUpdateFileEmpty", () => {
         const dashboardApi = new Dashboard(myAxios);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
         expect.assertions(1);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.readFileSync).mockImplementation((_, __) => "");
         return dashboardApi
             .createOrUpdate("empty-sample.json")
@@ -136,8 +139,10 @@ describe("Dashboard API Test", () => {
 
     it("createOrUpdateFailedIfReturnError", () => {
         const dashboardApi = new Dashboard(myAxios);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
         mocked(fs.readFileSync).mockImplementation(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (_, __) =>
                 `{ "id": null, "uid": null, "title": "sample", "schemaVersion": 16, "version": 0}`
         );
@@ -152,8 +157,10 @@ describe("Dashboard API Test", () => {
 
     it("createOrUpdateFailedIfReturnFailedStatus", () => {
         const dashboardApi = new Dashboard(myAxios);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
         mocked(fs.readFileSync).mockImplementation(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (_, __) =>
                 `{ "id": null, "uid": null, "title": "sample", "schemaVersion": 16, "version": 0}`
         );
@@ -167,8 +174,10 @@ describe("Dashboard API Test", () => {
 
     it("createOrUpdateSuccess", async () => {
         const dashboardApi = new Dashboard(myAxios);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
         mocked(fs.readFileSync).mockImplementation(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (_, __) =>
                 `{ "id": null, "uid": null, "title": "sample", "schemaVersion": 16, "version": 0}`
         );
