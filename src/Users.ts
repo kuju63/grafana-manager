@@ -1,4 +1,4 @@
-import { APIBase } from "./ApiBase";
+import { ApiBase } from "./ApiBase";
 
 export interface SearchUsersWithPagingResponse {
     totalCount: number;
@@ -19,10 +19,10 @@ export interface UserInfo {
     authLabels: Array<string>;
 }
 
-export class Users extends APIBase {
+export class Users extends ApiBase {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     searchUsers(perpage = 1000, page = 1): Promise<Array<UserInfo>> {
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise<Array<UserInfo>>((resolve, reject) => {
             this.apiInstance
                 .get<Array<UserInfo>>(
                     `/api/users?perpage=${perpage}&page=${page}`

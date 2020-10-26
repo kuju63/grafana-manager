@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 
-export abstract class APIBase {
+export abstract class ApiBase {
     protected apiInstance: AxiosInstance;
     /**
      * Initialize new instance for dashboard class.

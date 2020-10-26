@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { APIBase } from "./ApiBase";
+import { ApiBase } from "./ApiBase";
 
 export interface DeleteDashboardResponse {
     title: string;
@@ -19,7 +19,7 @@ export interface CreateOrUpdateDashboardResponse {
     slug?: string;
 }
 
-export class Dashboard extends APIBase {
+export class Dashboard extends ApiBase {
     async getByUidAsync(uid: string): Promise<unknown> {
         const promise = new Promise<unknown>((resolve, reject) => {
             if (!uid || uid === "") {
