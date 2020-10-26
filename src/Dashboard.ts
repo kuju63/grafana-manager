@@ -1,5 +1,5 @@
-import { AxiosInstance } from "axios";
 import * as fs from "fs";
+import { APIBase } from "./ApiBase";
 
 export interface DeleteDashboardResponse {
     title: string;
@@ -19,16 +19,7 @@ export interface CreateOrUpdateDashboardResponse {
     slug?: string;
 }
 
-export class Dashboard {
-    private apiInstance: AxiosInstance;
-    /**
-     * Initialize new instance for dashboard class.
-     * @param apiInstance Axios instance.
-     */
-    constructor(apiInstance: AxiosInstance) {
-        this.apiInstance = apiInstance;
-    }
-
+export class Dashboard extends APIBase {
     async getByUidAsync(uid: string): Promise<unknown> {
         const promise = new Promise<unknown>((resolve, reject) => {
             if (!uid || uid === "") {
