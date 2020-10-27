@@ -52,7 +52,32 @@ export class Users extends ApiBase {
         page = 1,
         query?: string
     ): Promise<SearchUsersWithPagingResponse> {
-        throw new Error("Not implemented");
+        const promise = new Promise<SearchUsersWithPagingResponse>(
+            (resolve, reject) => {
+                let uri = `/api/users?perpage=${perpage}&page=${page}`;
+                if (query) {
+                    uri += `&query=${query}`;
+                }
+                this.apiInstance.get<SearchUsersWithPagingResponse>(uri).then(
+                    (res) => {
+                        if (res.status === 200) {
+                            resolve(res.data);
+                        } else {
+                            reject({
+                                error: {
+                                    message: res.statusText,
+                                    status: res.status,
+                                },
+                            });
+                        }
+                    },
+                    (e) => {
+                        reject({ error: e });
+                    }
+                );
+            }
+        );
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

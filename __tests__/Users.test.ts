@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { Users } from "../src/Users";
+import { SearchUsersWithPagingResponse, UserInfo, Users } from "../src/Users";
 
 jest.mock("axios");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,6 +86,95 @@ describe("Users API Test", () => {
         const usersApi = new Users(myAxios);
         expect.assertions(1);
         return usersApi.searchUsers(100, 1).catch((e) => {
+            expect(e.error.message).toBe("Connection error");
+        });
+    });
+
+    it("searchUsersPagingSuccess", async () => {
+        const expectUser: Array<UserInfo> = [
+            {
+                id: 1,
+                name: "Admin",
+                login: "admin",
+                email: "admin@mygraf.com",
+                isAdmin: true,
+                isDisabled: false,
+                lastSeenAt: new Date("2020-04-10T20:29:27+03:00"),
+                lastSeenAtAge: "2m",
+                authLabels: ["OAuth"],
+            },
+            {
+                id: 2,
+                name: "User",
+                login: "user",
+                email: "user@mygraf.com",
+                isAdmin: false,
+                isDisabled: false,
+                lastSeenAt: new Date("2020-01-24T12:38:47+02:00"),
+                lastSeenAtAge: "2m",
+                authLabels: [],
+            },
+        ];
+        const expectResponse: SearchUsersWithPagingResponse = {
+            totalCount: 2,
+            users: expectUser,
+            page: 1,
+            perPage: 10,
+        };
+        myAxios.get.mockResolvedValue({
+            data: expectResponse,
+            status: 200,
+        });
+        const usersApi = new Users(myAxios);
+        const resData = await usersApi.searchUsersWithPaging(10, 1, "sample");
+        expect(resData.totalCount).toBe(2);
+        expect(resData.perPage).toBe(10);
+        expect(resData.page).toBe(1);
+        expect(resData.users.length).toBe(expectUser.length);
+        expect(resData.users[0].id).toBe(expectUser[0].id);
+        expect(resData.users[0].name).toBe(expectUser[0].name);
+        expect(resData.users[0].login).toBe(expectUser[0].login);
+        expect(resData.users[0].email).toBe(expectUser[0].email);
+        expect(resData.users[0].isAdmin).toBe(expectUser[0].isAdmin);
+        expect(resData.users[0].isDisabled).toBe(expectUser[0].isDisabled);
+        expect(resData.users[0].lastSeenAt).toBe(expectUser[0].lastSeenAt);
+        expect(resData.users[0].lastSeenAtAge).toBe(
+            expectUser[0].lastSeenAtAge
+        );
+        expect(resData.users[0].authLabels).toBe(expectUser[0].authLabels);
+        expect(resData.users[1].id).toBe(expectUser[1].id);
+        expect(resData.users[1].name).toBe(expectUser[1].name);
+        expect(resData.users[1].login).toBe(expectUser[1].login);
+        expect(resData.users[1].email).toBe(expectUser[1].email);
+        expect(resData.users[1].isAdmin).toBe(expectUser[1].isAdmin);
+        expect(resData.users[1].isDisabled).toBe(expectUser[1].isDisabled);
+        expect(resData.users[1].lastSeenAt).toBe(expectUser[1].lastSeenAt);
+        expect(resData.users[1].lastSeenAtAge).toBe(
+            expectUser[1].lastSeenAtAge
+        );
+        expect(resData.users[1].authLabels).toBe(expectUser[1].authLabels);
+    });
+
+    it("searchUsersWithPagingReturnFailStatus", () => {
+        const res = { message: "Unauthorized" };
+        myAxios.get.mockResolvedValue({
+            data: res,
+            status: 403,
+            statusText: "Unauthorized",
+        });
+        const usersApi = new Users(myAxios);
+        expect.assertions(2);
+        return usersApi.searchUsersWithPaging(100, 1, "sample").catch((e) => {
+            expect(e.error.message).toBe("Unauthorized");
+            expect(e.error.status).toBe(403);
+        });
+    });
+
+    it("searchUsersWithPagingFailed", () => {
+        myAxios.get.mockRejectedValue({ message: "Connection error" });
+        const usersApi = new Users(myAxios);
+        expect.assertions(1);
+        return usersApi.searchUsersWithPaging(100, 1, "sample").catch((e) => {
             expect(e.error.message).toBe("Connection error");
         });
     });
