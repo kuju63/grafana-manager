@@ -17,6 +17,13 @@ export interface UserInfo {
     lastSeenAt: Date;
     lastSeenAtAge: string;
     authLabels: Array<string>;
+    theme?: string;
+    orgId?: number;
+    isGrafanaAdmin?: boolean;
+    isExternal?: boolean;
+    updatedAt?: Date;
+    createdAt?: Date;
+    avatarUrl?: string;
 }
 
 export class Users extends ApiBase {
