@@ -178,4 +178,68 @@ describe("Users API Test", () => {
             expect(e.error.message).toBe("Connection error");
         });
     });
+
+    it("getUserByIdFailed", async () => {
+        myAxios.get.mockRejectedValue({ message: "Connection error" });
+        const usersApi = new Users(myAxios);
+        expect.assertions(1);
+        await expect(usersApi.getUserById(1)).rejects.toEqual({
+            error: {
+                message: "Connection error",
+            },
+        });
+    });
+
+    it("getUserByIdNotFound", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 404,
+            statusText: "Not found",
+        });
+        const usersApi = new Users(myAxios);
+        expect.assertions(1);
+        await expect(usersApi.getUserById(1)).rejects.toEqual({
+            error: {
+                message: "Not found",
+                status: 404,
+            },
+        });
+    });
+
+    it("getUserByIdSuccess", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                id: "1",
+                email: "user@mygraf.com",
+                name: "admin",
+                login: "admin",
+                theme: "light",
+                orgId: 1,
+                isGrafanaAdmin: true,
+                isDisabled: true,
+                isExternal: false,
+                authLabels: [],
+                updatedAt: new Date("2019-09-09T11:31:26+01:00"),
+                createdAt: new Date("2019-09-09T11:31:26+01:00"),
+                avatarUrl: "",
+            },
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getUserById(1)).resolves.toEqual({
+            id: "1",
+            email: "user@mygraf.com",
+            name: "admin",
+            login: "admin",
+            theme: "light",
+            orgId: 1,
+            isGrafanaAdmin: true,
+            isDisabled: true,
+            isExternal: false,
+            authLabels: [],
+            updatedAt: new Date("2019-09-09T11:31:26+01:00"),
+            createdAt: new Date("2019-09-09T11:31:26+01:00"),
+            avatarUrl: "",
+        });
+    });
 });

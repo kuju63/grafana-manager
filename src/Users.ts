@@ -87,9 +87,28 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getUserById(id: number): Promise<any> {
-        throw new Error("Not implemented");
+    getUserById(id: number): Promise<UserInfo> {
+        const promise = new Promise<UserInfo>((resolve, reject) => {
+            const uri = `/api/users/${id}`;
+            this.apiInstance.get<UserInfo>(uri).then(
+                (res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                message: res.statusText,
+                                status: res.status,
+                            },
+                        });
+                    }
+                },
+                (e) => {
+                    reject({ error: e });
+                }
+            );
+        });
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
