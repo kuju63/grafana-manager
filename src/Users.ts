@@ -111,9 +111,36 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    lookupUserByUserNameOrEmail(userName: string): Promise<any> {
-        throw new Error("Not implemented");
+    lookupUserByUserNameOrEmail(userName: string): Promise<UserInfo> {
+        const promise = new Promise<UserInfo>((resolve, reject) => {
+            if (userName && userName !== "") {
+                const uri = `/api/users/lookup?loginOrEmail=${userName}`;
+                this.apiInstance.get<UserInfo>(uri).then(
+                    (res) => {
+                        if (res.status == 200) {
+                            resolve(res.data);
+                        } else {
+                            reject({
+                                error: {
+                                    message: res.statusText,
+                                    status: res.status,
+                                },
+                            });
+                        }
+                    },
+                    (e) => {
+                        reject({ error: e });
+                    }
+                );
+            } else {
+                reject({
+                    error: {
+                        message: "Argument invalid",
+                    },
+                });
+            }
+        });
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

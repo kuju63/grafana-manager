@@ -242,4 +242,86 @@ describe("Users API Test", () => {
             avatarUrl: "",
         });
     });
+
+    it("lookupUserByUserNameOrEmailSucceed", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusTest: "OK",
+            data: {
+                id: 1,
+                email: "user@mygraf.com",
+                name: "admin",
+                login: "admin",
+                theme: "light",
+                orgId: 1,
+                isGrafanaAdmin: true,
+                isDisabled: false,
+                isExternal: false,
+                authLabels: null,
+                updatedAt: new Date("2019-09-25T14:44:37+01:00"),
+                createdAt: new Date("2019-09-25T14:44:37+01:00"),
+                avatarUrl: "",
+            },
+        });
+
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.lookupUserByUserNameOrEmail("sample@foo.com")
+        ).resolves.toEqual({
+            id: 1,
+            email: "user@mygraf.com",
+            name: "admin",
+            login: "admin",
+            theme: "light",
+            orgId: 1,
+            isGrafanaAdmin: true,
+            isDisabled: false,
+            isExternal: false,
+            authLabels: null,
+            updatedAt: new Date("2019-09-25T14:44:37+01:00"),
+            createdAt: new Date("2019-09-25T14:44:37+01:00"),
+            avatarUrl: "",
+        });
+    });
+
+    it("lookupUserByUserNameOrEmailResponseNotFound", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 404,
+            statusText: "Not Found",
+        });
+
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.lookupUserByUserNameOrEmail("sample@foo.com")
+        ).rejects.toEqual({
+            error: {
+                message: "Not Found",
+                status: 404,
+            },
+        });
+    });
+
+    it("lookupUserByUserNameOrEmailArgumentEmpty", async () => {
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.lookupUserByUserNameOrEmail("")).rejects.toEqual({
+            error: {
+                message: "Argument invalid",
+            },
+        });
+    });
+
+    it("lookupUserByUserNameOrEmailRejected", async () => {
+        myAxios.get.mockRejectedValue({
+            message: "Connection Failed",
+        });
+
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.lookupUserByUserNameOrEmail("sample@foo.com")
+        ).rejects.toEqual({
+            error: {
+                message: "Connection Failed",
+            },
+        });
+    });
 });
