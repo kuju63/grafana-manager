@@ -8,15 +8,15 @@ export interface SearchUsersWithPagingResponse {
 }
 
 export interface UserInfo {
-    id: number;
+    id?: number;
     name: string;
     login: string;
     email: string;
-    isAdmin: boolean;
-    isDisabled: boolean;
-    lastSeenAt: Date;
-    lastSeenAtAge: string;
-    authLabels: Array<string>;
+    isAdmin?: boolean;
+    isDisabled?: boolean;
+    lastSeenAt?: Date;
+    lastSeenAtAge?: string;
+    authLabels?: Array<string>;
     theme?: string;
     orgId?: number;
     isGrafanaAdmin?: boolean;
@@ -24,6 +24,10 @@ export interface UserInfo {
     updatedAt?: Date;
     createdAt?: Date;
     avatarUrl?: string;
+}
+
+export interface UserUpdateResponse {
+    message: string;
 }
 
 export class Users extends ApiBase {
@@ -143,9 +147,28 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    updateUser(id: number): Promise<any> {
-        throw new Error("Not implemented");
+    updateUser(id: number, userInfo: UserInfo): Promise<UserUpdateResponse> {
+        const promise = new Promise<UserUpdateResponse>((resolve, reject) => {
+            const uri = `/api/users/${id}`;
+            this.apiInstance.put<UserUpdateResponse>(uri, userInfo).then(
+                (res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                message: res.statusText,
+                                status: res.status,
+                            },
+                        });
+                    }
+                },
+                (e) => {
+                    reject({ error: e });
+                }
+            );
+        });
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

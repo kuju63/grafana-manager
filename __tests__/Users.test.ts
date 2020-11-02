@@ -8,6 +8,7 @@ const myAxios: jest.Mocked<AxiosInstance> = axios as any;
 describe("Users API Test", () => {
     beforeEach(() => {
         myAxios.get.mockClear();
+        myAxios.put.mockClear();
     });
     it("initialize", () => {
         expect.assertions(0);
@@ -318,6 +319,65 @@ describe("Users API Test", () => {
         const usersApi = new Users(myAxios);
         await expect(
             usersApi.lookupUserByUserNameOrEmail("sample@foo.com")
+        ).rejects.toEqual({
+            error: {
+                message: "Connection Failed",
+            },
+        });
+    });
+
+    it("updateUserSucceed", async () => {
+        myAxios.put.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                message: "User updated",
+            },
+        });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.updateUser(2, {
+                email: "foo@bar.com",
+                name: "foo",
+                login: "user",
+                theme: "light",
+            })
+        ).resolves.toEqual({
+            message: "User updated",
+        });
+    });
+
+    it("updateUserFailed", async () => {
+        myAxios.put.mockResolvedValue({
+            status: 404,
+            statusText: "not found",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.updateUser(2, {
+                email: "foo@bar.com",
+                name: "foo",
+                login: "user",
+                theme: "light",
+            })
+        ).rejects.toEqual({
+            error: {
+                message: "not found",
+                status: 404,
+            },
+        });
+    });
+
+    it("updateUserCommunicationFailed", async () => {
+        myAxios.put.mockRejectedValue({ message: "Connection Failed" });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.updateUser(2, {
+                email: "foo@bar.com",
+                name: "foo",
+                login: "user",
+                theme: "light",
+            })
         ).rejects.toEqual({
             error: {
                 message: "Connection Failed",
