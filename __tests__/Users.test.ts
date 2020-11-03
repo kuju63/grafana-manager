@@ -466,4 +466,63 @@ describe("Users API Test", () => {
             error: { message: "Not found", status: 404 },
         });
     });
+
+    it("getActualUserSucceed", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                id: 1,
+                email: "admin@mygraf.com",
+                name: "Admin",
+                login: "admin",
+                theme: "light",
+                orgId: 1,
+                isGrafanaAdmin: true,
+                isDisabled: false,
+                isExternal: false,
+                authLabels: [],
+                updatedAt: new Date("2019-09-09T11:31:26+01:00"),
+                createdAt: new Date("2019-09-09T11:31:26+01:00"),
+                avatarUrl: "",
+            },
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getActualUser()).resolves.toEqual({
+            id: 1,
+            email: "admin@mygraf.com",
+            name: "Admin",
+            login: "admin",
+            theme: "light",
+            orgId: 1,
+            isGrafanaAdmin: true,
+            isDisabled: false,
+            isExternal: false,
+            authLabels: [],
+            updatedAt: new Date("2019-09-09T11:31:26+01:00"),
+            createdAt: new Date("2019-09-09T11:31:26+01:00"),
+            avatarUrl: "",
+        });
+    });
+    it("getActualUserResponseNotFound", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 404,
+            statusText: "Not found",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getActualUser()).rejects.toEqual({
+            error: {
+                message: "Not found",
+                status: 404,
+            },
+        });
+    });
+
+    it("getActualUserFailed", async () => {
+        myAxios.get.mockRejectedValue({ message: "Connection error" });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getActualUser()).rejects.toEqual({
+            error: { message: "Connection error" },
+        });
+    });
 });
