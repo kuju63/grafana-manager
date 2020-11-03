@@ -30,6 +30,12 @@ export interface UserUpdateResponse {
     message: string;
 }
 
+export interface Organization {
+    orgId: number;
+    name: string;
+    role: string;
+}
+
 export class Users extends ApiBase {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     searchUsers(perpage = 1000, page = 1): Promise<Array<UserInfo>> {
@@ -171,8 +177,7 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getOrganizationsForUser(id: number): Promise<any> {
+    getOrganizationsForUser(id: number): Promise<Organization[]> {
         throw new Error("Not implemented");
     }
 
