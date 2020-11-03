@@ -384,4 +384,47 @@ describe("Users API Test", () => {
             },
         });
     });
+
+    it("getOrganizationForUserSuccess", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: [
+                {
+                    orgId: 1,
+                    name: "Main Org.",
+                    role: "Admin",
+                },
+            ],
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getOrganizationsForUser(1)).resolves.toEqual([
+            {
+                orgId: 1,
+                name: "Main Org.",
+                role: "Admin",
+            },
+        ]);
+    });
+
+    it("getOrganizationForUserResponseNotFound", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 404,
+            statusText: "Not found",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getOrganizationsForUser(1)).rejects.toEqual({
+            error: { message: "Not found", status: 404 },
+        });
+    });
+
+    it("getOrganizationForUserFailed", async () => {
+        myAxios.get.mockRejectedValue({ message: "Connection failed" });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getOrganizationsForUser(1)).rejects.toEqual({
+            error: {
+                message: "Connection failed",
+            },
+        });
+    });
 });

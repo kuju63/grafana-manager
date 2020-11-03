@@ -178,7 +178,27 @@ export class Users extends ApiBase {
     }
 
     getOrganizationsForUser(id: number): Promise<Organization[]> {
-        throw new Error("Not implemented");
+        const promise = new Promise<Array<Organization>>((resolve, reject) => {
+            const uri = `/api/users/${id}/orgs`;
+            this.apiInstance.get<Array<Organization>>(uri).then(
+                (res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                message: res.statusText,
+                                status: res.status,
+                            },
+                        });
+                    }
+                },
+                (e) => {
+                    reject({ error: e });
+                }
+            );
+        });
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
