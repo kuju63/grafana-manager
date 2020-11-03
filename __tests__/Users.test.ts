@@ -427,4 +427,43 @@ describe("Users API Test", () => {
             },
         });
     });
+
+    it("getTeamsForUserSucceed", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: [
+                {
+                    id: 1,
+                    orgId: 1,
+                    name: "team1",
+                    email: "",
+                    avatarUrl: "/avatar/3fcfe295eae3bcb67a49349377428a66",
+                    memberCount: 1,
+                },
+            ],
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getTeamsForUser(1)).resolves.toEqual([
+            {
+                id: 1,
+                orgId: 1,
+                name: "team1",
+                email: "",
+                avatarUrl: "/avatar/3fcfe295eae3bcb67a49349377428a66",
+                memberCount: 1,
+            },
+        ]);
+    });
+
+    it("getTeamsForUserResponseNotFound", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 404,
+            statusText: "Not found",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getTeamsForUser(1)).rejects.toEqual({
+            error: { message: "Not found", status: 404 },
+        });
+    });
 });
