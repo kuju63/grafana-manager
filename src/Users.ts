@@ -26,7 +26,7 @@ export interface UserInfo {
     avatarUrl?: string;
 }
 
-export interface UserUpdateResponse {
+export interface UpdateResponse {
     message: string;
 }
 
@@ -43,6 +43,11 @@ export interface Team {
     email: string;
     avatarUrl: string;
     memberCount: number;
+}
+
+interface ChangePasswordRequest {
+    oldPassword: string;
+    newPassword: string;
 }
 
 export class Users extends ApiBase {
@@ -162,10 +167,10 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    updateUser(id: number, userInfo: UserInfo): Promise<UserUpdateResponse> {
-        const promise = new Promise<UserUpdateResponse>((resolve, reject) => {
+    updateUser(id: number, userInfo: UserInfo): Promise<UpdateResponse> {
+        const promise = new Promise<UpdateResponse>((resolve, reject) => {
             const uri = `/api/users/${id}`;
-            this.apiInstance.put<UserUpdateResponse>(uri, userInfo).then(
+            this.apiInstance.put<UpdateResponse>(uri, userInfo).then(
                 (res) => {
                     if (res.status === 200) {
                         resolve(res.data);
@@ -234,7 +239,6 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getActualUser(): Promise<UserInfo> {
         const promise = new Promise<UserInfo>((resolve, reject) => {
             const uri = "/api/user";
