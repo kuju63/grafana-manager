@@ -602,6 +602,38 @@ describe("Users API Test", () => {
             error: response,
         });
     });
+
+    it("switchOrganizationForSignedUserSuccess", async () => {
+        myAxios.post.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                message: "Active organization changed",
+            },
+        });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.switchOrganizationForSignedUser(1)
+        ).resolves.toEqual({
+            message: "Active organization changed",
+        });
+    });
+
+    it("switchOrganizationForSignedUserResponseError", async () => {
+        axiosPostResponseNotFound();
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.switchOrganizationForSignedUser(1)
+        ).rejects.toEqual(responseError);
+    });
+
+    it("switchOrganizationForSignedUserFailed", async () => {
+        const response = axiosPostRejectedValue();
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.switchOrganizationForSignedUser(1)
+        ).rejects.toEqual({ error: response });
+    });
 });
 
 function axiosPostRejectedValue(): UpdateResponse {
@@ -609,3 +641,8 @@ function axiosPostRejectedValue(): UpdateResponse {
     myAxios.post.mockRejectedValue(response);
     return response;
 }
+
+function axiosPostResponseNotFound(): void {
+    myAxios.post.mockResolvedValue({ status: 404, statusText: "Not found" });
+}
+const responseError = { error: { message: "Not found", status: 404 } };
