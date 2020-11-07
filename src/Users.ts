@@ -45,11 +45,6 @@ export interface Team {
     memberCount: number;
 }
 
-interface ChangePasswordRequest {
-    oldPassword: string;
-    newPassword: string;
-}
-
 export class Users extends ApiBase {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     searchUsers(perpage = 1000, page = 1): Promise<Array<UserInfo>> {
@@ -263,9 +258,38 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    changePassword(oldPassword: string, newPassword: string): Promise<any> {
-        throw new Error("Not implemented");
+    changePassword(
+        oldPassword: string,
+        newPassword: string
+    ): Promise<UpdateResponse> {
+        const promise = new Promise<UpdateResponse>((resolve, reject) => {
+            const uri = "/api/user/password";
+            this.apiInstance
+                .put<UpdateResponse>(uri, {
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                })
+                .then(
+                    (res) => {
+                        if (res.status === 200) {
+                            resolve(res.data);
+                        } else {
+                            reject({
+                                error: {
+                                    status: res.status,
+                                    message: res.statusText,
+                                },
+                            });
+                        }
+                    },
+                    (e) => {
+                        reject({
+                            error: e,
+                        });
+                    }
+                );
+        });
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

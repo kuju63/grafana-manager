@@ -525,4 +525,39 @@ describe("Users API Test", () => {
             error: { message: "Connection error" },
         });
     });
+
+    it("changePasswordSuccess", async () => {
+        myAxios.put.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                message: "User password changed",
+            },
+        });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.changePassword("OldPassword", "NewPassword")
+        ).resolves.toEqual({ message: "User password changed" });
+    });
+
+    it("changePasswordResponseError", async () => {
+        myAxios.put.mockResolvedValue({
+            status: 404,
+            statusText: "Not found",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.changePassword("OldPassword", "NewPassword")
+        ).rejects.toEqual({ error: { message: "Not found", status: 404 } });
+    });
+
+    it("changePasswordFailed", async () => {
+        myAxios.put.mockRejectedValue({
+            message: "Connection Error",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(
+            usersApi.changePassword("OldPassword", "NewPassword")
+        ).rejects.toEqual({ error: { message: "Connection Error" } });
+    });
 });
