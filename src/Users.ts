@@ -292,9 +292,31 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    switchOrganization(id: number, organizationId: number): Promise<any> {
-        throw new Error("Not implemented");
+    switchOrganization(
+        id: number,
+        organizationId: number
+    ): Promise<UpdateResponse> {
+        const promise = new Promise<UpdateResponse>((resolve, reject) => {
+            const uri = `/api/users/${id}/using/${organizationId}`;
+            this.apiInstance.post(uri).then(
+                (res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                status: res.status,
+                                message: res.statusText,
+                            },
+                        });
+                    }
+                },
+                (e) => {
+                    reject({ error: e });
+                }
+            );
+        });
+        return promise;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

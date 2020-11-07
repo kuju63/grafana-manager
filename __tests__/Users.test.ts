@@ -1,5 +1,10 @@
 import axios, { AxiosInstance } from "axios";
-import { SearchUsersWithPagingResponse, UserInfo, Users } from "../src/Users";
+import {
+    SearchUsersWithPagingResponse,
+    UpdateResponse,
+    UserInfo,
+    Users,
+} from "../src/Users";
 
 jest.mock("axios");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -9,6 +14,7 @@ describe("Users API Test", () => {
     beforeEach(() => {
         myAxios.get.mockClear();
         myAxios.put.mockClear();
+        myAxios.post.mockClear();
     });
     it("initialize", () => {
         expect.assertions(0);
@@ -560,4 +566,46 @@ describe("Users API Test", () => {
             usersApi.changePassword("OldPassword", "NewPassword")
         ).rejects.toEqual({ error: { message: "Connection Error" } });
     });
+
+    it("switchOrganizationSucceed", async () => {
+        myAxios.post.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                message: "Active organization changed",
+            },
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.switchOrganization(1, 2)).resolves.toEqual({
+            message: "Active organization changed",
+        });
+    });
+
+    it("switchOrganizationResponseError", async () => {
+        myAxios.post.mockResolvedValue({
+            status: 404,
+            statusText: "Not found",
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.switchOrganization(1, 2)).rejects.toEqual({
+            error: {
+                status: 404,
+                message: "Not found",
+            },
+        });
+    });
+
+    it("switchOrganizationFailed", async () => {
+        const response = axiosPostRejectedValue();
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.switchOrganization(1, 2)).rejects.toEqual({
+            error: response,
+        });
+    });
 });
+
+function axiosPostRejectedValue(): UpdateResponse {
+    const response = { message: "Connection failed" };
+    myAxios.post.mockRejectedValue(response);
+    return response;
+}
