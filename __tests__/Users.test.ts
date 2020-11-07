@@ -634,15 +634,63 @@ describe("Users API Test", () => {
             usersApi.switchOrganizationForSignedUser(1)
         ).rejects.toEqual({ error: response });
     });
+
+    it("getOrganizationsOfActualUserSucceed", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: [
+                {
+                    orgId: 1,
+                    name: "Main Org.",
+                    role: "Admin",
+                },
+            ],
+        });
+        const usersApi = new Users(myAxios);
+        await expect(usersApi.getOrganizationsOfActualUser()).resolves.toEqual([
+            {
+                orgId: 1,
+                name: "Main Org.",
+                role: "Admin",
+            },
+        ]);
+    });
+
+    it("getOrganizationsOfActualUserResponseError", async () => {
+        axiosGetResponseNotFound();
+        const users = new Users(myAxios);
+        await expect(users.getOrganizationsOfActualUser()).rejects.toEqual(
+            responseError
+        );
+    });
+
+    it("getOrganizationsOfActualUserFailed", async () => {
+        axiosGetRejectedValue();
+        const users = new Users(myAxios);
+        await expect(users.getOrganizationsOfActualUser()).rejects.toEqual({
+            error: responseFail,
+        });
+    });
 });
 
+function axiosGetRejectedValue(): void {
+    myAxios.get.mockRejectedValue(responseFail);
+}
+
 function axiosPostRejectedValue(): UpdateResponse {
-    const response = { message: "Connection failed" };
-    myAxios.post.mockRejectedValue(response);
-    return response;
+    myAxios.post.mockRejectedValue(responseFail);
+    return responseFail;
 }
 
 function axiosPostResponseNotFound(): void {
-    myAxios.post.mockResolvedValue({ status: 404, statusText: "Not found" });
+    myAxios.post.mockResolvedValue(responseNotFound);
 }
+
+function axiosGetResponseNotFound(): void {
+    myAxios.get.mockResolvedValue(responseNotFound);
+}
+
+const responseNotFound = { status: 404, statusText: "Not found" };
 const responseError = { error: { message: "Not found", status: 404 } };
+const responseFail = { message: "Connection failed" };

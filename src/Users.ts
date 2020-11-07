@@ -345,8 +345,26 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    getOrganizationsOfActualUser(): Promise<any> {
-        throw new Error("Not implemented");
+    getOrganizationsOfActualUser(): Promise<Array<Organization>> {
+        const promise = new Promise<Array<Organization>>((resolve, reject) => {
+            const uri = "/api/user/orgs";
+            this.apiInstance
+                .get<Array<Organization>>(uri)
+                .then((res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                status: res.status,
+                                message: res.statusText,
+                            },
+                        });
+                    }
+                })
+                .catch((e) => reject({ error: e }));
+        });
+        return promise;
     }
 
     getTeamsOfActualUser(): Promise<any> {
