@@ -672,6 +672,50 @@ describe("Users API Test", () => {
             error: responseFail,
         });
     });
+
+    it("getTeamsOfActualUserSucceed", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: [
+                {
+                    id: 1,
+                    orgId: 1,
+                    name: "MyTestTeam",
+                    email: "",
+                    avatarUrl: "/avatar/3f49c15916554246daa714b9bd0ee398",
+                    memberCount: 1,
+                },
+            ],
+        });
+        const users = new Users(myAxios);
+        await expect(users.getTeamsOfActualUser()).resolves.toEqual([
+            {
+                id: 1,
+                orgId: 1,
+                name: "MyTestTeam",
+                email: "",
+                avatarUrl: "/avatar/3f49c15916554246daa714b9bd0ee398",
+                memberCount: 1,
+            },
+        ]);
+    });
+
+    it("getTeamsOfActualUserResponseError", async () => {
+        axiosGetResponseNotFound();
+        const users = new Users(myAxios);
+        await expect(users.getTeamsOfActualUser()).rejects.toEqual(
+            responseError
+        );
+    });
+
+    it("getTeamsOfActualUserFailed", async () => {
+        axiosGetRejectedValue();
+        const users = new Users(myAxios);
+        await expect(users.getTeamsOfActualUser()).rejects.toEqual({
+            error: responseFail,
+        });
+    });
 });
 
 function axiosGetRejectedValue(): void {

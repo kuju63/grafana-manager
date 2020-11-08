@@ -367,8 +367,26 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    getTeamsOfActualUser(): Promise<any> {
-        throw new Error("Not implemented");
+    getTeamsOfActualUser(): Promise<Array<Team>> {
+        const promise = new Promise<Array<Team>>((resolve, reject) => {
+            const uri = "/api/user/teams";
+            this.apiInstance
+                .get<Array<Team>>(uri)
+                .then((res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                message: res.statusText,
+                                status: res.status,
+                            },
+                        });
+                    }
+                })
+                .catch((e) => reject({ error: e }));
+        });
+        return promise;
     }
 
     starDashboard(dashboardId: number): Promise<any> {
