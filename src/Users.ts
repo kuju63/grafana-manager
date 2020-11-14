@@ -45,6 +45,19 @@ export interface Team {
     memberCount: number;
 }
 
+export interface AuthToken {
+    id: number;
+    isActive: boolean;
+    clientIp: string;
+    browser: string;
+    browserVersion: string;
+    os: string;
+    osVersion: string;
+    device: string;
+    createdAt: Date;
+    seenAt: Date;
+}
+
 export class Users extends ApiBase {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     searchUsers(perpage = 1000, page = 1): Promise<Array<UserInfo>> {
@@ -433,8 +446,26 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    getAuthTokenOfActualUser(): Promise<any> {
-        throw new Error("Not implemented");
+    getAuthTokenOfActualUser(): Promise<Array<AuthToken>> {
+        const promise = new Promise<Array<AuthToken>>((resole, reject) => {
+            const uri = "/api/user/auth-tokens";
+            this.apiInstance
+                .get<Array<AuthToken>>(uri)
+                .then((res) => {
+                    if (res.status === 200) {
+                        resole(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                message: res.statusText,
+                                status: res.status,
+                            },
+                        });
+                    }
+                })
+                .catch((e) => reject({ error: e }));
+        });
+        return promise;
     }
 
     revokeAuthTokenOfActualUser(tokenId: number): Promise<any> {

@@ -771,6 +771,82 @@ describe("Users API Test", () => {
             error: responseFail,
         });
     });
+
+    it("getAuthTokenActualUserSucceed", async () => {
+        myAxios.get.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: [
+                {
+                    id: 361,
+                    isActive: true,
+                    clientIp: "127.0.0.1",
+                    browser: "Chrome",
+                    browserVersion: "72.0",
+                    os: "Linux",
+                    osVersion: "",
+                    device: "Other",
+                    createdAt: new Date("2019-03-05T21:22:54+01:00"),
+                    seenAt: new Date("2019-03-06T19:41:06+01:00"),
+                },
+                {
+                    id: 364,
+                    isActive: false,
+                    clientIp: "127.0.0.1",
+                    browser: "Mobile Safari",
+                    browserVersion: "11.0",
+                    os: "iOS",
+                    osVersion: "11.0",
+                    device: "iPhone",
+                    createdAt: new Date("2019-03-06T19:41:19+01:00"),
+                    seenAt: new Date("2019-03-06T19:41:21+01:00"),
+                },
+            ],
+        });
+        const users = new Users(myAxios);
+        await expect(users.getAuthTokenOfActualUser()).resolves.toEqual([
+            {
+                id: 361,
+                isActive: true,
+                clientIp: "127.0.0.1",
+                browser: "Chrome",
+                browserVersion: "72.0",
+                os: "Linux",
+                osVersion: "",
+                device: "Other",
+                createdAt: new Date("2019-03-05T21:22:54+01:00"),
+                seenAt: new Date("2019-03-06T19:41:06+01:00"),
+            },
+            {
+                id: 364,
+                isActive: false,
+                clientIp: "127.0.0.1",
+                browser: "Mobile Safari",
+                browserVersion: "11.0",
+                os: "iOS",
+                osVersion: "11.0",
+                device: "iPhone",
+                createdAt: new Date("2019-03-06T19:41:19+01:00"),
+                seenAt: new Date("2019-03-06T19:41:21+01:00"),
+            },
+        ]);
+    });
+
+    it("getAuthTokenOfActualUserResponseError", async () => {
+        axiosGetResponseNotFound();
+        const users = new Users(myAxios);
+        await expect(users.getAuthTokenOfActualUser()).rejects.toEqual(
+            responseError
+        );
+    });
+
+    it("geAuthTokenOfActualUserFailed", async () => {
+        axiosGetRejectedValue();
+        const users = new Users(myAxios);
+        await expect(users.getAuthTokenOfActualUser()).rejects.toEqual({
+            error: responseFail,
+        });
+    });
 });
 
 function axiosGetRejectedValue(): void {
