@@ -15,6 +15,7 @@ describe("Users API Test", () => {
         myAxios.get.mockClear();
         myAxios.put.mockClear();
         myAxios.post.mockClear();
+        myAxios.delete.mockClear();
     });
     it("initialize", () => {
         expect.assertions(0);
@@ -742,6 +743,34 @@ describe("Users API Test", () => {
             error: responseFail,
         });
     });
+
+    it("unstarDashboardSucceed", async () => {
+        myAxios.delete.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: {
+                message: "Dashboard unstarred",
+            },
+        });
+        const users = new Users(myAxios);
+        await expect(users.unstarDashboard(1)).resolves.toEqual({
+            message: "Dashboard unstarred",
+        });
+    });
+
+    it("unstarDashboardResponseError", async () => {
+        axiosDeleteResponseNotFound();
+        const users = new Users(myAxios);
+        await expect(users.unstarDashboard(1)).rejects.toEqual(responseError);
+    });
+
+    it("unstarDashboardFailed", async () => {
+        axiosDeleteRejectedValue();
+        const users = new Users(myAxios);
+        await expect(users.unstarDashboard(1)).rejects.toEqual({
+            error: responseFail,
+        });
+    });
 });
 
 function axiosGetRejectedValue(): void {
@@ -753,12 +782,20 @@ function axiosPostRejectedValue(): UpdateResponse {
     return responseFail;
 }
 
+function axiosDeleteRejectedValue(): void {
+    myAxios.delete.mockRejectedValue(responseFail);
+}
+
 function axiosPostResponseNotFound(): void {
     myAxios.post.mockResolvedValue(responseNotFound);
 }
 
 function axiosGetResponseNotFound(): void {
     myAxios.get.mockResolvedValue(responseNotFound);
+}
+
+function axiosDeleteResponseNotFound(): void {
+    myAxios.delete.mockResolvedValue(responseNotFound);
 }
 
 const responseNotFound = { status: 404, statusText: "Not found" };
