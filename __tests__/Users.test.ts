@@ -716,6 +716,32 @@ describe("Users API Test", () => {
             error: responseFail,
         });
     });
+
+    it("starDashboardSucceed", async () => {
+        myAxios.post.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: { message: "Dashboard starred!" },
+        });
+        const users = new Users(myAxios);
+        await expect(users.starDashboard(1)).resolves.toEqual({
+            message: "Dashboard starred!",
+        });
+    });
+
+    it("starDashboardResponseError", async () => {
+        axiosPostResponseNotFound();
+        const users = new Users(myAxios);
+        await expect(users.starDashboard(1)).rejects.toEqual(responseError);
+    });
+
+    it("starDashboardFailed", async () => {
+        axiosPostRejectedValue();
+        const users = new Users(myAxios);
+        await expect(users.starDashboard(1)).rejects.toEqual({
+            error: responseFail,
+        });
+    });
 });
 
 function axiosGetRejectedValue(): void {

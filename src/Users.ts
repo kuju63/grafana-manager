@@ -389,8 +389,26 @@ export class Users extends ApiBase {
         return promise;
     }
 
-    starDashboard(dashboardId: number): Promise<any> {
-        throw new Error("Not implemented");
+    starDashboard(dashboardId: number): Promise<UpdateResponse> {
+        const promise = new Promise<UpdateResponse>((resolve, reject) => {
+            const uri = `/api/user/stars/dashboard/${dashboardId}`;
+            this.apiInstance
+                .post<UpdateResponse>(uri)
+                .then((res) => {
+                    if (res.status === 200) {
+                        resolve(res.data);
+                    } else {
+                        reject({
+                            error: {
+                                message: res.statusText,
+                                status: res.status,
+                            },
+                        });
+                    }
+                })
+                .catch((e) => reject({ error: e }));
+        });
+        return promise;
     }
 
     unstarDashboard(dashboardId: number): Promise<any> {
