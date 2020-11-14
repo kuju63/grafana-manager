@@ -847,6 +847,34 @@ describe("Users API Test", () => {
             error: responseFail,
         });
     });
+
+    it("revokeAuthTokenOfActualUserSucceed", async () => {
+        myAxios.post.mockResolvedValue({
+            status: 200,
+            statusText: "ok",
+            data: { message: "User auth token revoked" },
+        });
+        const users = new Users(myAxios);
+        await expect(users.revokeAuthTokenOfActualUser(1)).resolves.toEqual({
+            message: "User auth token revoked",
+        });
+    });
+
+    it("revokeAuthTokenOfActualUserResponseError", async () => {
+        axiosPostResponseNotFound();
+        const users = new Users(myAxios);
+        await expect(users.revokeAuthTokenOfActualUser(1)).rejects.toEqual(
+            responseError
+        );
+    });
+
+    it("revokeAuthTokenOfActualUserFailed", async () => {
+        axiosPostRejectedValue();
+        const users = new Users(myAxios);
+        await expect(users.revokeAuthTokenOfActualUser(1)).rejects.toEqual({
+            error: responseFail,
+        });
+    });
 });
 
 function axiosGetRejectedValue(): void {
