@@ -29,16 +29,7 @@ export class Dashboard extends ApiBase {
                     .get<unknown>(`/api/dashboards/uid/${uid}`)
                     .then(
                         (res) => {
-                            if (res.status === 200) {
-                                resolve(res.data);
-                            } else {
-                                reject({
-                                    error: {
-                                        message: res.statusText,
-                                        status: res.status,
-                                    },
-                                });
-                            }
+                            this.statusOkResult(resolve, reject, res);
                         },
                         (error) => {
                             reject({ error: error });
@@ -57,25 +48,18 @@ export class Dashboard extends ApiBase {
                 if (!uid || uid === "") {
                     reject({ error: "uid is empty" });
                 } else {
-                    this.apiInstance.delete(`/api/dashboards/uid/${uid}`).then(
-                        (res) => {
-                            if (res.status === 200) {
-                                const responseData: DeleteDashboardResponse =
-                                    res.data;
-                                resolve(responseData);
-                            } else {
-                                reject({
-                                    error: {
-                                        message: res.statusText,
-                                        status: res.status,
-                                    },
-                                });
+                    this.apiInstance
+                        .delete<DeleteDashboardResponse>(
+                            `/api/dashboards/uid/${uid}`
+                        )
+                        .then(
+                            (res) => {
+                                this.statusOkResult(resolve, reject, res);
+                            },
+                            (error) => {
+                                reject({ error: error });
                             }
-                        },
-                        (error) => {
-                            reject({ error: error });
-                        }
-                    );
+                        );
                 }
             }
         );
@@ -87,7 +71,7 @@ export class Dashboard extends ApiBase {
         folderId = 0
     ): Promise<CreateOrUpdateDashboardResponse> {
         const promise = new Promise<CreateOrUpdateDashboardResponse>(
-            (resole, reject) => {
+            (resolve, reject) => {
                 if (!sourceFile || sourceFile === "") {
                     reject({ error: "source file is null or empty" });
                 }
@@ -98,24 +82,15 @@ export class Dashboard extends ApiBase {
                         encoding: "utf8",
                     });
                     if (content && content !== "") {
-                        // TODO Request for create or update dashboard.
                         const requestData = `{"dashboard": ${content}, "folderId": ${folderId}, "overwrite": true}`;
                         this.apiInstance
-                            .post("/api/dashboard/db", requestData)
+                            .post<CreateOrUpdateDashboardResponse>(
+                                "/api/dashboard/db",
+                                requestData
+                            )
                             .then(
                                 (res) => {
-                                    if (res.status === 200) {
-                                        const responseData: CreateOrUpdateDashboardResponse =
-                                            res.data;
-                                        resole(responseData);
-                                    } else {
-                                        reject({
-                                            error: {
-                                                message: res.statusText,
-                                                status: res.status,
-                                            },
-                                        });
-                                    }
+                                    this.statusOkResult(resolve, reject, res);
                                 },
                                 (error) => {
                                     reject({ error: error });
