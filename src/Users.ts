@@ -68,16 +68,7 @@ export class Users extends ApiBase {
                 )
                 .then(
                     (res) => {
-                        if (res.status === 200) {
-                            resolve(res.data);
-                        } else {
-                            reject({
-                                error: {
-                                    message: res.statusText,
-                                    status: res.status,
-                                },
-                            });
-                        }
+                        this.statusOkResult(resolve, reject, res);
                     },
                     (e) => {
                         reject({ error: e });
@@ -99,16 +90,7 @@ export class Users extends ApiBase {
                 }
                 this.apiInstance.get<SearchUsersWithPagingResponse>(uri).then(
                     (res) => {
-                        if (res.status === 200) {
-                            resolve(res.data);
-                        } else {
-                            reject({
-                                error: {
-                                    message: res.statusText,
-                                    status: res.status,
-                                },
-                            });
-                        }
+                        this.statusOkResult(resolve, reject, res);
                     },
                     (e) => {
                         reject({ error: e });
@@ -124,16 +106,7 @@ export class Users extends ApiBase {
             const uri = `/api/users/${id}`;
             this.apiInstance.get<UserInfo>(uri).then(
                 (res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 },
                 (e) => {
                     reject({ error: e });
@@ -149,16 +122,7 @@ export class Users extends ApiBase {
                 const uri = `/api/users/lookup?loginOrEmail=${userName}`;
                 this.apiInstance.get<UserInfo>(uri).then(
                     (res) => {
-                        if (res.status == 200) {
-                            resolve(res.data);
-                        } else {
-                            reject({
-                                error: {
-                                    message: res.statusText,
-                                    status: res.status,
-                                },
-                            });
-                        }
+                        this.statusOkResult(resolve, reject, res);
                     },
                     (e) => {
                         reject({ error: e });
@@ -180,16 +144,7 @@ export class Users extends ApiBase {
             const uri = `/api/users/${id}`;
             this.apiInstance.put<UpdateResponse>(uri, userInfo).then(
                 (res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 },
                 (e) => {
                     reject({ error: e });
@@ -204,16 +159,7 @@ export class Users extends ApiBase {
             const uri = `/api/users/${id}/orgs`;
             this.apiInstance.get<Array<Organization>>(uri).then(
                 (res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 },
                 (e) => {
                     reject({ error: e });
@@ -228,16 +174,7 @@ export class Users extends ApiBase {
             const uri = `/api/users/${id}/teams`;
             this.apiInstance.get<Array<Team>>(uri).then(
                 (res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 },
                 (e) => {
                     reject({ error: e });
@@ -252,16 +189,7 @@ export class Users extends ApiBase {
             const uri = "/api/user";
             this.apiInstance.get<UserInfo>(uri).then(
                 (res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 },
                 (e) => {
                     reject({ error: e });
@@ -284,16 +212,7 @@ export class Users extends ApiBase {
                 })
                 .then(
                     (res) => {
-                        if (res.status === 200) {
-                            resolve(res.data);
-                        } else {
-                            reject({
-                                error: {
-                                    status: res.status,
-                                    message: res.statusText,
-                                },
-                            });
-                        }
+                        this.statusOkResult(resolve, reject, res);
                     },
                     (e) => {
                         reject({
@@ -311,18 +230,9 @@ export class Users extends ApiBase {
     ): Promise<UpdateResponse> {
         const promise = new Promise<UpdateResponse>((resolve, reject) => {
             const uri = `/api/users/${id}/using/${organizationId}`;
-            this.apiInstance.post(uri).then(
+            this.apiInstance.post<UpdateResponse>(uri).then(
                 (res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                status: res.status,
-                                message: res.statusText,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 },
                 (e) => {
                     reject({ error: e });
@@ -340,16 +250,7 @@ export class Users extends ApiBase {
             this.apiInstance
                 .post<UpdateResponse>(uri)
                 .then((res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                status: res.status,
-                                message: res.statusText,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => {
                     reject({ error: e });
@@ -364,16 +265,7 @@ export class Users extends ApiBase {
             this.apiInstance
                 .get<Array<Organization>>(uri)
                 .then((res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                status: res.status,
-                                message: res.statusText,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => reject({ error: e }));
         });
@@ -386,16 +278,7 @@ export class Users extends ApiBase {
             this.apiInstance
                 .get<Array<Team>>(uri)
                 .then((res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => reject({ error: e }));
         });
@@ -408,16 +291,7 @@ export class Users extends ApiBase {
             this.apiInstance
                 .post<UpdateResponse>(uri)
                 .then((res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => reject({ error: e }));
         });
@@ -428,18 +302,9 @@ export class Users extends ApiBase {
         const promise = new Promise<UpdateResponse>((resolve, reject) => {
             const uri = `/api/user/stars/dashboard/${dashboardId}`;
             this.apiInstance
-                .delete(uri)
+                .delete<UpdateResponse>(uri)
                 .then((res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => reject({ error: e }));
         });
@@ -447,21 +312,12 @@ export class Users extends ApiBase {
     }
 
     getAuthTokenOfActualUser(): Promise<Array<AuthToken>> {
-        const promise = new Promise<Array<AuthToken>>((resole, reject) => {
+        const promise = new Promise<Array<AuthToken>>((resolve, reject) => {
             const uri = "/api/user/auth-tokens";
             this.apiInstance
                 .get<Array<AuthToken>>(uri)
                 .then((res) => {
-                    if (res.status === 200) {
-                        resole(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => reject({ error: e }));
         });
@@ -472,18 +328,9 @@ export class Users extends ApiBase {
         const promise = new Promise<UpdateResponse>((resolve, reject) => {
             const uri = "/api/user/revoke-auth-token";
             this.apiInstance
-                .post(uri, { authTokenId: tokenId })
+                .post<UpdateResponse>(uri, { authTokenId: tokenId })
                 .then((res) => {
-                    if (res.status === 200) {
-                        resolve(res.data);
-                    } else {
-                        reject({
-                            error: {
-                                message: res.statusText,
-                                status: res.status,
-                            },
-                        });
-                    }
+                    this.statusOkResult(resolve, reject, res);
                 })
                 .catch((e) => reject({ error: e }));
         });

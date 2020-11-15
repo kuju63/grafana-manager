@@ -52,29 +52,10 @@ describe("Users API Test", () => {
             status: 200,
         });
         const usersApi = new Users(myAxios);
-        const resData = await usersApi.searchUsers(100, 1);
-        expect(resData.length).toBe(expectList.length);
-        expect(resData[0].id).toBe(expectList[0].id);
-        expect(resData[0].name).toBe(expectList[0].name);
-        expect(resData[0].login).toBe(expectList[0].login);
-        expect(resData[0].email).toBe(expectList[0].email);
-        expect(resData[0].isAdmin).toBe(expectList[0].isAdmin);
-        expect(resData[0].isDisabled).toBe(expectList[0].isDisabled);
-        expect(resData[0].lastSeenAt).toBe(expectList[0].lastSeenAt);
-        expect(resData[0].lastSeenAtAge).toBe(expectList[0].lastSeenAtAge);
-        expect(resData[0].authLabels).toBe(expectList[0].authLabels);
-        expect(resData[1].id).toBe(expectList[1].id);
-        expect(resData[1].name).toBe(expectList[1].name);
-        expect(resData[1].login).toBe(expectList[1].login);
-        expect(resData[1].email).toBe(expectList[1].email);
-        expect(resData[1].isAdmin).toBe(expectList[1].isAdmin);
-        expect(resData[1].isDisabled).toBe(expectList[1].isDisabled);
-        expect(resData[1].lastSeenAt).toBe(expectList[1].lastSeenAt);
-        expect(resData[1].lastSeenAtAge).toBe(expectList[1].lastSeenAtAge);
-        expect(resData[1].authLabels).toBe(expectList[1].authLabels);
+        await expect(usersApi.searchUsers(100, 1)).resolves.toEqual(expectList);
     });
 
-    it("searchUsersReturnFailStatus", () => {
+    it("searchUsersReturnFailStatus", async () => {
         const res = { message: "Unauthorized" };
         myAxios.get.mockResolvedValue({
             data: res,
@@ -82,19 +63,16 @@ describe("Users API Test", () => {
             statusText: "Unauthorized",
         });
         const usersApi = new Users(myAxios);
-        expect.assertions(2);
-        return usersApi.searchUsers(100, 1).catch((e) => {
-            expect(e.error.message).toBe("Unauthorized");
-            expect(e.error.status).toBe(403);
+        await expect(usersApi.searchUsers(100, 1)).rejects.toEqual({
+            error: { message: "Unauthorized", status: 403 },
         });
     });
 
-    it("searchUsersFailed", () => {
+    it("searchUsersFailed", async () => {
         myAxios.get.mockRejectedValue({ message: "Connection error" });
         const usersApi = new Users(myAxios);
-        expect.assertions(1);
-        return usersApi.searchUsers(100, 1).catch((e) => {
-            expect(e.error.message).toBe("Connection error");
+        await expect(usersApi.searchUsers(100, 1)).rejects.toEqual({
+            error: { message: "Connection error" },
         });
     });
 
@@ -134,36 +112,12 @@ describe("Users API Test", () => {
             status: 200,
         });
         const usersApi = new Users(myAxios);
-        const resData = await usersApi.searchUsersWithPaging(10, 1, "sample");
-        expect(resData.totalCount).toBe(2);
-        expect(resData.perPage).toBe(10);
-        expect(resData.page).toBe(1);
-        expect(resData.users.length).toBe(expectUser.length);
-        expect(resData.users[0].id).toBe(expectUser[0].id);
-        expect(resData.users[0].name).toBe(expectUser[0].name);
-        expect(resData.users[0].login).toBe(expectUser[0].login);
-        expect(resData.users[0].email).toBe(expectUser[0].email);
-        expect(resData.users[0].isAdmin).toBe(expectUser[0].isAdmin);
-        expect(resData.users[0].isDisabled).toBe(expectUser[0].isDisabled);
-        expect(resData.users[0].lastSeenAt).toBe(expectUser[0].lastSeenAt);
-        expect(resData.users[0].lastSeenAtAge).toBe(
-            expectUser[0].lastSeenAtAge
-        );
-        expect(resData.users[0].authLabels).toBe(expectUser[0].authLabels);
-        expect(resData.users[1].id).toBe(expectUser[1].id);
-        expect(resData.users[1].name).toBe(expectUser[1].name);
-        expect(resData.users[1].login).toBe(expectUser[1].login);
-        expect(resData.users[1].email).toBe(expectUser[1].email);
-        expect(resData.users[1].isAdmin).toBe(expectUser[1].isAdmin);
-        expect(resData.users[1].isDisabled).toBe(expectUser[1].isDisabled);
-        expect(resData.users[1].lastSeenAt).toBe(expectUser[1].lastSeenAt);
-        expect(resData.users[1].lastSeenAtAge).toBe(
-            expectUser[1].lastSeenAtAge
-        );
-        expect(resData.users[1].authLabels).toBe(expectUser[1].authLabels);
+        await expect(
+            usersApi.searchUsersWithPaging(10, 1, "sample")
+        ).resolves.toEqual(expectResponse);
     });
 
-    it("searchUsersWithPagingReturnFailStatus", () => {
+    it("searchUsersWithPagingReturnFailStatus", async () => {
         const res = { message: "Unauthorized" };
         myAxios.get.mockResolvedValue({
             data: res,
@@ -171,20 +125,17 @@ describe("Users API Test", () => {
             statusText: "Unauthorized",
         });
         const usersApi = new Users(myAxios);
-        expect.assertions(2);
-        return usersApi.searchUsersWithPaging(100, 1, "sample").catch((e) => {
-            expect(e.error.message).toBe("Unauthorized");
-            expect(e.error.status).toBe(403);
-        });
+        await expect(
+            usersApi.searchUsersWithPaging(100, 1, "sample")
+        ).rejects.toEqual({ error: { message: "Unauthorized", status: 403 } });
     });
 
-    it("searchUsersWithPagingFailed", () => {
+    it("searchUsersWithPagingFailed", async () => {
         myAxios.get.mockRejectedValue({ message: "Connection error" });
         const usersApi = new Users(myAxios);
-        expect.assertions(1);
-        return usersApi.searchUsersWithPaging(100, 1, "sample").catch((e) => {
-            expect(e.error.message).toBe("Connection error");
-        });
+        await expect(
+            usersApi.searchUsersWithPaging(100, 1, "sample")
+        ).rejects.toEqual({ error: { message: "Connection error" } });
     });
 
     it("getUserByIdFailed", async () => {
@@ -464,14 +415,11 @@ describe("Users API Test", () => {
     });
 
     it("getTeamsForUserResponseNotFound", async () => {
-        myAxios.get.mockResolvedValue({
-            status: 404,
-            statusText: "Not found",
-        });
+        axiosGetResponseNotFound();
         const usersApi = new Users(myAxios);
-        await expect(usersApi.getTeamsForUser(1)).rejects.toEqual({
-            error: { message: "Not found", status: 404 },
-        });
+        await expect(usersApi.getTeamsForUser(1)).rejects.toEqual(
+            responseError
+        );
     });
 
     it("getActualUserSucceed", async () => {
