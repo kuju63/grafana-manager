@@ -19,73 +19,66 @@ describe("Dashboard API Test", () => {
         expect.assertions(0);
         new Dashboard(myAxios);
     });
-    it("getByUidAsyncEmptyUid", () => {
+    it("getByUidAsyncEmptyUid", async () => {
         const dashboardApi = new Dashboard(myAxios);
-        expect.assertions(1);
-        return dashboardApi.getByUidAsync("").catch((e) =>
-            expect(e).toEqual({
-                error: "uid is empty",
-            })
-        );
+        await expect(dashboardApi.getByUidAsync("")).rejects.toEqual({
+            error: "uid is empty",
+        });
     });
 
     it("getByUidAsyncSucceed", async () => {
         myAxios.get.mockResolvedValue({ data: "", status: 200 });
         const dashboardApi = new Dashboard(myAxios);
-        const actual = await dashboardApi.getByUidAsync("sample");
-        expect(actual).toBe("");
+        await expect(dashboardApi.getByUidAsync("sample")).resolves.toEqual("");
     });
 
-    it("getByUidAsyncCommunicationFailed", () => {
+    it("getByUidAsyncCommunicationFailed", async () => {
         myAxios.get.mockRejectedValue({ message: "error" });
         expect.assertions(1);
         const dashboardApi = new Dashboard(myAxios);
-        dashboardApi.getByUidAsync("sample").catch((error) => {
-            expect(error.message).toBe("error");
+        await expect(dashboardApi.getByUidAsync("sample")).rejects.toEqual({
+            error: { message: "error" },
         });
     });
 
-    it("getByUidAsyncFailedIfResponseErrorStatus", () => {
+    it("getByUidAsyncFailedIfResponseErrorStatus", async () => {
         myAxios.get.mockResolvedValue({
             data: "",
             status: 404,
             statusText: "Not Found.",
         });
-        expect.assertions(2);
         const dashboardApi = new Dashboard(myAxios);
-        return dashboardApi.getByUidAsync("sample").catch((e) => {
-            expect(e.error.message).toBe("Not Found.");
-            expect(e.error.status).toBe(404);
+        await expect(dashboardApi.getByUidAsync("sample")).rejects.toEqual({
+            error: { message: "Not Found.", status: 404 },
         });
     });
 
-    it("deleteDashboardEmptyUid", () => {
+    it("deleteDashboardEmptyUid", async () => {
         const dashboardApi = new Dashboard(myAxios);
-        dashboardApi.deleteDashboardByUidAsync("").catch((e) => {
-            expect(e.error).toBe("uid is empty");
+        await expect(
+            dashboardApi.deleteDashboardByUidAsync("")
+        ).rejects.toEqual({
+            error: "uid is empty",
         });
     });
 
-    it("deleteDashboardByUidAsyncFailedIfReturnError", () => {
+    it("deleteDashboardByUidAsyncFailedIfReturnError", async () => {
         myAxios.delete.mockRejectedValue({ message: "error" });
         const dashboardApi = new Dashboard(myAxios);
-        expect.assertions(1);
-        return dashboardApi
-            .deleteDashboardByUidAsync("sample")
-            .catch((e) => expect(e.error.message).toBe("error"));
+        await expect(
+            dashboardApi.deleteDashboardByUidAsync("sample")
+        ).rejects.toEqual({ error: { message: "error" } });
     });
 
-    it("deleteDashboardByUidFailedIfReturnErrorStatus", () => {
+    it("deleteDashboardByUidFailedIfReturnErrorStatus", async () => {
         myAxios.delete.mockResolvedValue({
             status: 404,
             statusText: "Not Found.",
         });
         const dashboardApi = new Dashboard(myAxios);
-        expect.assertions(2);
-        return dashboardApi.deleteDashboardByUidAsync("sample").catch((e) => {
-            expect(e.error.status).toBe(404);
-            expect(e.error.message).toBe("Not Found.");
-        });
+        await expect(
+            dashboardApi.deleteDashboardByUidAsync("sample")
+        ).rejects.toEqual({ error: { message: "Not Found.", status: 404 } });
     });
 
     it("deleteDashboardByUidSuccess", async () => {
@@ -99,45 +92,43 @@ describe("Dashboard API Test", () => {
             },
         });
         const dashboardApi = new Dashboard(myAxios);
-        const actual = await dashboardApi.deleteDashboardByUidAsync("sample");
-        expect(actual.title).toBe("sample");
-        expect(actual.message).toBe("Dashboard sample deleted");
-        expect(actual.id).toBe(2);
+        await expect(
+            dashboardApi.deleteDashboardByUidAsync("sample")
+        ).resolves.toEqual({
+            title: "sample",
+            message: "Dashboard sample deleted",
+            id: 2,
+        });
     });
 
-    it("createOrUpdateEmptySourceFile", () => {
+    it("createOrUpdateEmptySourceFile", async () => {
         const dashboardApi = new Dashboard(myAxios);
-        expect.assertions(1);
-        return dashboardApi
-            .createOrUpdate("")
-            .catch((e) => expect(e.error).toBe("source file is null or empty"));
+        await expect(dashboardApi.createOrUpdate("")).rejects.toEqual({
+            error: "source file is null or empty",
+        });
     });
 
-    it("createOrUpdateFileNotFound", () => {
+    it("createOrUpdateFileNotFound", async () => {
         const dashboardApi = new Dashboard(myAxios);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => false);
-        expect.assertions(1);
-        return dashboardApi
-            .createOrUpdate("missing-sample.json")
-            .catch((e) => expect(e.error).toBe("Source file not found."));
+        await expect(
+            dashboardApi.createOrUpdate("missing-sample.json")
+        ).rejects.toEqual({ error: "Source file not found." });
     });
 
-    it("createOrUpdateFileEmpty", () => {
+    it("createOrUpdateFileEmpty", async () => {
         const dashboardApi = new Dashboard(myAxios);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
-        expect.assertions(1);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.readFileSync).mockImplementation((_, __) => "");
-        return dashboardApi
-            .createOrUpdate("empty-sample.json")
-            .catch((e) =>
-                expect(e.error).toBe("Source file content is empty.")
-            );
+        await expect(
+            dashboardApi.createOrUpdate("empty-sample.json")
+        ).rejects.toEqual({ error: "Source file content is empty." });
     });
 
-    it("createOrUpdateFailedIfReturnError", () => {
+    it("createOrUpdateFailedIfReturnError", async () => {
         const dashboardApi = new Dashboard(myAxios);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
@@ -149,13 +140,12 @@ describe("Dashboard API Test", () => {
         myAxios.post.mockRejectedValue({
             message: "error",
         });
-        expect.assertions(1);
-        return dashboardApi
-            .createOrUpdate("sample.json")
-            .catch((e) => expect(e.error.message).toBe("error"));
+        await expect(
+            dashboardApi.createOrUpdate("sample.json")
+        ).rejects.toEqual({ error: { message: "error" } });
     });
 
-    it("createOrUpdateFailedIfReturnFailedStatus", () => {
+    it("createOrUpdateFailedIfReturnFailedStatus", async () => {
         const dashboardApi = new Dashboard(myAxios);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mocked(fs.existsSync).mockImplementation((_) => true);
@@ -165,11 +155,9 @@ describe("Dashboard API Test", () => {
                 `{ "id": null, "uid": null, "title": "sample", "schemaVersion": 16, "version": 0}`
         );
         myAxios.post.mockResolvedValue({ status: 400, statusText: "Errors" });
-        expect.assertions(2);
-        return dashboardApi.createOrUpdate("sample.json").catch((e) => {
-            expect(e.error.status).toBe(400);
-            expect(e.error.message).toBe("Errors");
-        });
+        await expect(
+            dashboardApi.createOrUpdate("sample.json")
+        ).rejects.toEqual({ error: { message: "Errors", status: 400 } });
     });
 
     it("createOrUpdateSuccess", async () => {
@@ -194,12 +182,8 @@ describe("Dashboard API Test", () => {
             statusText: "Success",
             data: mockResponseData,
         });
-        const data = await dashboardApi.createOrUpdate("sample.json", 3);
-        expect(data.id).toBe(mockResponseData.id);
-        expect(data.uid).toBe(mockResponseData.uid);
-        expect(data.url).toBe(mockResponseData.url);
-        expect(data.status).toBe(mockResponseData.status);
-        expect(data.version).toBe(mockResponseData.version);
-        expect(data.slug).toBe(mockResponseData.slug);
+        await expect(
+            dashboardApi.createOrUpdate("sample.json", 3)
+        ).resolves.toEqual(mockResponseData);
     });
 });
