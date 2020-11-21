@@ -22,6 +22,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: yarn install
+    - run: yarn lint
     - run: yarn tsc
     - run: yarn test
     - name: Codecov
