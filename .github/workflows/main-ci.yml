@@ -29,5 +29,5 @@ jobs:
       # uses: codecov/codecov-action@239febf655bba88b16ff5dea1d3135ea8663a1f9
       uses: codecov/codecov-action@v1.0.15
       with:
-        token: ${{ secret.CODECOV_TOKEN }}
+        token: ${{ secrets.CODECOV_TOKEN }}
         env_vars: ${{ matrix.node-version }}
