@@ -1,5 +1,8 @@
 # grafana-manager
 
+[![codecov](https://codecov.io/gh/kuju63/grafana-manager/branch/main/graph/badge.svg?token=VSSZCLOE43)](https://codecov.io/gh/kuju63/grafana-manager)
+![CI](https://github.com/kuju63/grafana-manager/workflows/CI/badge.svg)
+
 grafana-manager is wrapper library of HTTP API for grafana.
 
 ## Instllation
